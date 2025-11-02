@@ -8,8 +8,8 @@
 </head>
 <body>
   <!-- 🔹 Header -->
-  <header class="navbar">
-    <div class="logo">systeme.</div>
+  <header class="navbar" id="navbar">
+    <div class="logo" id="logo">systeme.</div>
     <nav class="nav-links">
       <a href="#home">Home</a>
       <a href="#about">About</a>
@@ -20,7 +20,6 @@
     <div class="nav-buttons">
       <button class="btn-outline">Log in</button>
       <button class="btn-primary">Sign up</button>
-      <!-- 🌙 دکمه حالت تاریک -->
       <button id="theme-toggle" class="theme-toggle">🌙</button>
     </div>
   </header>
@@ -31,9 +30,10 @@
       <h1>Save 80% on <br><span>underwriting a business</span></h1>
       <p>Use Systeme AI to automatically generate P&L and cash flow reports in seconds.</p>
       <div class="hero-actions">
-        <input type="email" placeholder="Enter your email...">
-        <button class="btn-primary">Get Early Access</button>
+        <input id="email-input" type="email" placeholder="Enter your email...">
+        <button id="access-btn" class="btn-primary">Get Early Access</button>
       </div>
+      <p id="email-status" style="color:#00b894; margin-top:8px;"></p>
     </div>
     <div class="hero-image">
       <img src="img/hero-img.png" alt="Dashboard Preview">
@@ -167,7 +167,7 @@
   </footer>
 
   <script>
-    // 🔹 اسکرول نرم برای ناوبری
+    // 🔹 1. نرم‌کردن اسکرول با click
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
@@ -177,11 +177,9 @@
       });
     });
 
-    // 🔹 حالت Dark Mode
+    // 🔹 2. حالت Dark Mode با click
     const toggleBtn = document.getElementById("theme-toggle");
     const body = document.body;
-
-    // بررسی حالت ذخیره شده
     if (localStorage.getItem("theme") === "dark") {
       body.classList.add("dark-mode");
       toggleBtn.textContent = "🌞";
@@ -189,7 +187,6 @@
 
     toggleBtn.addEventListener("click", () => {
       body.classList.toggle("dark-mode");
-
       if (body.classList.contains("dark-mode")) {
         toggleBtn.textContent = "🌞";
         localStorage.setItem("theme", "dark");
@@ -197,6 +194,72 @@
         toggleBtn.textContent = "🌙";
         localStorage.setItem("theme", "light");
       }
+    });
+
+    // 🔹 3. رویداد load
+    window.addEventListener("load", () => {
+      console.log("✅ Page fully loaded!");
+    });
+
+    // 🔹 4. تغییر رنگ هدر هنگام scroll
+    window.addEventListener("scroll", () => {
+      const navbar = document.getElementById("navbar");
+      if (window.scrollY > 50) {
+        navbar.style.background = "rgba(255,255,255,0.9)";
+        navbar.style.boxShadow = "0 2px 10px rgba(0,0,0,0.1)";
+      } else {
+        navbar.style.background = "";
+        navbar.style.boxShadow = "";
+      }
+    });
+
+    // 🔹 5. input event برای فیلد ایمیل
+    const emailInput = document.getElementById("email-input");
+    const emailStatus = document.getElementById("email-status");
+    emailInput.addEventListener("input", () => {
+      if (emailInput.value.includes("@")) {
+        emailStatus.textContent = "✅ Email format looks good!";
+      } else {
+        emailStatus.textContent = "";
+      }
+    });
+
+    // 🔹 6. click روی دکمه ارسال
+    const accessBtn = document.getElementById("access-btn");
+    accessBtn.addEventListener("click", () => {
+      if (emailInput.value.includes("@")) {
+        alert("🎉 Thank you! We'll contact you soon.");
+      } else {
+        alert("⚠️ Please enter a valid email address.");
+      }
+    });
+
+    // 🔹 7. keydown برای فشردن Enter
+    emailInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        accessBtn.click();
+      }
+    });
+
+    // 🔹 8. دوبار کلیک برای ریست تم
+    const logo = document.getElementById("logo");
+    logo.addEventListener("dblclick", () => {
+      localStorage.removeItem("theme");
+      body.classList.remove("dark-mode");
+      toggleBtn.textContent = "🌙";
+      alert("🔄 Theme reset to default.");
+    });
+
+    // 🔹 افکت mouseenter/mouseleave روی کارت‌ها
+    const cards = document.querySelectorAll(".feature-card");
+    cards.forEach(card => {
+      card.addEventListener("mouseenter", () => {
+        card.style.transform = "translateY(-8px)";
+        card.style.transition = "0.3s";
+      });
+      card.addEventListener("mouseleave", () => {
+        card.style.transform = "translateY(0)";
+      });
     });
   </script>
 </body>
